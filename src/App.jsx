@@ -1,6 +1,7 @@
 import { useState } from 'react'
-import './App.css'
-import LoginButton from './components/LoginButton'
+import './index.css'
+import LoginForm from './components/LoginForm'
+import RegisterForm from './components/Registration/RegisterForm'
 
 export default function App() {
   let isLoggedin = false
@@ -9,7 +10,8 @@ export default function App() {
 
   return (
     <>
-      {!isLoggedin && <LoginButton />}
+      {!isLoggedin && <LoginForm />}
+      {!isLoggedin && <RegisterForm />}
     </>
   )
 }
