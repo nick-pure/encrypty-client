@@ -1,10 +1,14 @@
 .control {
-  border: 1px solid #ccc;
   padding: 0.8rem 2rem;
-  border: 1px solid #474747;
-  border-radius: 5px;
+  border: 0.13rem solid rgb(218, 218, 218);
+  border-radius: 16px; 
   cursor: pointer;
   transition: all 0.3s;
-  font-weight: bold;
+  font-weight: 400;
+  font-size:larger;
   margin-right: 1rem;
-}
+  padding-bottom: 1rem;
+  padding-top: 1rem;
+  font-family: 'Roboto';
+  background: #ffffff;
+} 

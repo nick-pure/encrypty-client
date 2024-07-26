@@ -1,22 +1,39 @@
 .button {
     padding: 0.8rem 2rem;
-    border: 1px solid #474747;
-    border-radius: 5px;
+    border: none;
+    border-radius: 16px; 
     cursor: pointer;
     transition: all 0.3s;
-    font-weight: bold;
+    font-weight: 400;
+    font-size:larger;
     margin-right: 1rem;
+    padding-bottom: 1rem;
+    padding-top: 1rem;
+    font-family: 'Roboto';
+    text-transform: uppercase;
+    background: #ffffff;
+    color: #0b91ff;
   } 
   
   .button:hover {
-    opacity: 0.8;
+    background: #e7f4ff;
+  }
+  .button.active:hover {
+    background:  #1484e0;
   }
   
   .button:disabled {
     cursor: not-allowed;
+    color:  #3b80b9;
   }
   
   .button.active {
-    background: #3e6ae1;
-    color: #fff;
+    background:  #0b91ff;
+    color: #ffffff;
+  }
+
+  .button.veryactive {
+    background:  #0b91ff;
+    color: #ffffff;
+    font-weight: 600;
   }

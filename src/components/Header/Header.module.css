@@ -1,0 +1,25 @@
+.header {
+  color:rgb(22, 22, 22);
+  transition: all 0.3s;
+  font-weight: 600;
+  font-family: 'Roboto';
+  line-height: 1.04;
+  letter-spacing: 0.01px;
+  font-size: 1.5rem;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 1rem;
+  text-align: center;
+}
+.p {
+  color:rgb(143, 143, 143);
+  transition: all 0.3s;
+  font-weight: 400;
+  font-family: 'Roboto';
+  line-height: 1.04;
+  letter-spacing: 0.01px;
+  font-size: larger;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
