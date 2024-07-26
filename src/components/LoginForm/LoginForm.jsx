@@ -1,9 +1,10 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, UseEffect, useEffect } from 'react'
 import Button from '../Button/Button'
 import Input from '../Input/Input'
 import classes from './LoginForm.module.css'
 import Header from '../Header/Header'
-export default function LoginForm() {
+import { checkAuth } from '../Auth/checkAuth'
+export default function LoginForm({onIsAuthenticatedChange}) {
   const [type, setType] = useState(0)
   const [phone, setPhone] = useState('')
   const [password, setPassword] = useState('')
@@ -18,6 +19,8 @@ export default function LoginForm() {
   const [loading, setLoading] = useState(false)
   const [errorHandler, setErrorHandler] = useState(null)
 
+  
+
 
   const login = useCallback(async () => {
     setLoading(true)
@@ -29,6 +32,7 @@ export default function LoginForm() {
     const requestOptions = {
       method: "POST",
       headers: myHeaders,
+      credentials: 'include',
       body: formdata,
       redirect: "follow"
     };
@@ -36,10 +40,12 @@ export default function LoginForm() {
     let resp = await fetch("http://127.0.0.1:8000/api/profiles/login/", requestOptions)
       .then((response) => response.json())
       .then((result) => {
+        console.log(result)
         if (result['status'] == 'error') {
           setErrorHandler(result['info']['error'])
         } else {
           setErrorHandler('')
+          onIsAuthenticatedChange(true)
           setType(0)
         }
       })
@@ -58,6 +64,7 @@ export default function LoginForm() {
     const requestOptions = {
       method: "POST",
       headers: myHeaders,
+      credentials : 'include',
       body: formdata,
       redirect: "follow"
     };
@@ -79,7 +86,9 @@ export default function LoginForm() {
   function loginHandler(event) {
     event.preventDefault();
     setErrorHandler("")
-    login()
+    if (login()) {
+      onIsAuthenticatedChange(checkAuth());
+    }
   }
   function registerHandler(event) {
     event.preventDefault();
@@ -90,6 +99,7 @@ export default function LoginForm() {
     setErrorHandler("")
     register()
   }
+  
   function handleChangeType(x) {
     setType(x)
   }
@@ -112,7 +122,8 @@ export default function LoginForm() {
   }
 
 
-  let permitted = phone.trim().length == 0 || password.trim().length == 0 || repeated_password.trim().length == 0 || name.trim().length == 0;
+  let permittedRegister = phone.trim().length == 0 || password.trim().length == 0 || repeated_password.trim().length == 0 || name.trim().length == 0;
+  let permittedLogin = phone.trim().length == 0 || password.trim().length == 0;
   return (
     <>
       <section className={`${classes.loginForm} ${classes.container}`}>
@@ -120,26 +131,26 @@ export default function LoginForm() {
             { type != 2 && <Button className={classes.container} onClick={()=>handleChangeType(2)} isActive={true}> Log in </Button> }
       { type == 2 &&
         <>
-          {errorHandler && <p style={{color : '#be0000'}}>{errorHandler}</p>}
+          {errorHandler && <p className={classes.error}>{errorHandler}</p>}
           {loading && <p>Loading...</p>}
           <form className={classes.container}>
             <Input type='text' value={phone} onChange={handleChangeFormPhone} placeholder='Phone' style={{border : hasPhone ? '1px solid red': null}}/>
             <Input type='password' value={password} onChange={handleChangeFormPassword} placeholder='Password' style={{border : hasPassword ? '1px solid red': null}}/>
-            <Button disabled={permitted} isActive={!permitted ? 2 : 0} onClick={loginHandler}> Log in </Button>
+            <Button disabled={permittedLogin} isActive={!permittedLogin ? 2 : 0} onClick={loginHandler}> Log in </Button>
           </form>
         </>
       }
       { type != 1 && <Button onClick={()=>handleChangeType(1)} isActive={true}> Register </Button> }
       { type == 1 &&
         <>
-          {errorHandler && <p style={{color : '#be0000'}}>{errorHandler}</p>}
+          {errorHandler && <p className={classes.error}>{errorHandler}</p>}
           {loading && <p>Loading...</p>}  
           <form className={classes.container}>
             <Input type='text' value={name} onChange={handleChangeFormName} placeholder='Your name' style={{border : hasName ? '1px solid red': null}}/>
             <Input type='text' value={phone} onChange={handleChangeFormPhone} placeholder='Phone' style={{border : hasPhone ? '1px solid red': null}}/>
             <Input type='password' value={password} onChange={handleChangeFormPassword} placeholder='Password' style={{border : hasPassword ? '1px solid red': null}}/>
             <Input type='password' value={repeated_password} onChange={handleChangeFormRepeatedPassword} placeholder='Repeat password' style={{border : hasRepeatedPassword ? '1px solid red': null}}/>
-            <Button disabled={permitted} isActive={!permitted ? 2 : 0} onClick={registerHandler}> Register </Button>
+            <Button disabled={permittedRegister} isActive={!permittedRegister ? 2 : 0} onClick={registerHandler}> Register </Button>
           </form>
           
         </>
