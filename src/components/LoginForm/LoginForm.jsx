@@ -1,9 +1,22 @@
-import { useState, useCallback, UseEffect, useEffect } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import Button from '../Button/Button'
 import Input from '../Input/Input'
 import classes from './LoginForm.module.css'
 import Header from '../Header/Header'
-import { checkAuth } from '../Auth/checkAuth'
+import axios from 'axios'
+import Cookies from 'js-cookie';
+// import {generateKeys, getPublicKey} from '../openssl/index'
+const API_URL = 'http://127.0.0.1:8000/api/';
+
+export const checkAuth = async () => {
+  try {
+    const response = await axios.get(`${API_URL}profiles/check_auth/`, { withCredentials: true });
+    return response.data.isAuthenticated;
+} catch (error) { 
+    return false;
+}
+}; 
+
 export default function LoginForm({onIsAuthenticatedChange}) {
   const [type, setType] = useState(0)
   const [phone, setPhone] = useState('')
@@ -19,76 +32,89 @@ export default function LoginForm({onIsAuthenticatedChange}) {
   const [loading, setLoading] = useState(false)
   const [errorHandler, setErrorHandler] = useState(null)
 
+  const register = async (name, phone, password) => {
+    try {
+        const headers = new Headers();
+        headers.append("Content-Type", "multipart/form-data")
+        const formdata = new FormData();
+        formdata.append("name", name);
+        formdata.append("phone", phone);
+        formdata.append("password", password);
+        let resp = await axios({
+          method: 'post',
+          url: `${API_URL}profiles/register/`,
+          data: formdata,
+          withCredentials: true,
+          headers: headers,
+        }).then((response) => response.response['data'])
+          .then((response) => {
+            console.log(response)
+            if (response['status'] == 'error') {
+              setErrorHandler(response['info']['error'])
+            } else {
+              setErrorHandler('')
+              setType(2)
+            }
+          })
+          .catch((response) => {
+            setErrorHandler(response.response['data']['info']['error'])
+          });
+    
+    } catch (error) {
+      console.error('Error logging in', error);
+      return false;
+    } 
+};
+
+const login = async (phone, password) => {
+  try {
+      const headers = new Headers();
+      headers.append("Content-Type", "multipart/form-data")
+      const formdata = new FormData();
+      formdata.append("phone", phone);
+      formdata.append("password", password);
+      let resp = await axios({
+        method: 'post',
+        url: `${API_URL}profiles/login/`,
+        data: formdata,
+        withCredentials: true,
+        headers: headers,
+      }).then((response) => response['data'])
+        .then((response) => {
+          if (response['status'] == 'error') {
+            setErrorHandler(response['info']['error'])
+          } else {
+            setErrorHandler('')
+            setType(0)
+            onIsAuthenticatedChange(true)
+          }
+        })
+        .catch((response) => {
+          console.log(response)
+          setErrorHandler(response['data']['info']['error'])
+        });
   
+  } catch (error) {
+    console.error('Error logging in', error);
+    return false;
+  } 
+};
 
-
-  const login = useCallback(async () => {
-    setLoading(true)
-    const myHeaders = new Headers();
-    const formdata = new FormData();
-    formdata.append("phone", phone);
-    formdata.append("password", password);
-
-    const requestOptions = {
-      method: "POST",
-      headers: myHeaders,
-      credentials: 'include',
-      body: formdata,
-      redirect: "follow"
+  
+  useEffect(() => {
+    const verifyAuth = async () => {
+        const isAuthenticated = await checkAuth();
+        onIsAuthenticatedChange(isAuthenticated);
     };
-
-    let resp = await fetch("http://127.0.0.1:8000/api/profiles/login/", requestOptions)
-      .then((response) => response.json())
-      .then((result) => {
-        console.log(result)
-        if (result['status'] == 'error') {
-          setErrorHandler(result['info']['error'])
-        } else {
-          setErrorHandler('')
-          onIsAuthenticatedChange(true)
-          setType(0)
-        }
-      })
-      .catch((error) => console.error(error));
-    setLoading(false)
-  }, [phone, password])
-
-  const register = useCallback(async () => {
-    setLoading(true)
-    const myHeaders = new Headers();
-    const formdata = new FormData();
-    formdata.append("name", name);
-    formdata.append("phone", phone);
-    formdata.append("password", password);
-
-    const requestOptions = {
-      method: "POST",
-      headers: myHeaders,
-      credentials : 'include',
-      body: formdata,
-      redirect: "follow"
-    };
-
-    let resp = await fetch("http://127.0.0.1:8000/api/profiles/register/", requestOptions)
-      .then((response) => response.json())
-      .then((result) => {
-        if (result['status'] == 'error') {
-          setErrorHandler(result['info']['error'])
-        } else {
-          setErrorHandler('')
-          setType(2)
-        }
-      })
-      .catch((error) => console.error(error));
-    setLoading(false)
-  }, [name, phone, password])
+      verifyAuth();
+  }, []);
 
   function loginHandler(event) {
     event.preventDefault();
-    setErrorHandler("")
-    if (login()) {
-      onIsAuthenticatedChange(checkAuth());
-    }
+    setErrorHandler("");
+    setLoading(true);
+    login(phone, password);
+    setLoading(false)
   }
   function registerHandler(event) {
     event.preventDefault();
@@ -97,13 +123,15 @@ export default function LoginForm({onIsAuthenticatedChange}) {
       return
     }
     setErrorHandler("")
-    register()
+    setLoading(true);
+    register(name, phone, password)
+    setLoading(false)
   }
   
+
   function handleChangeType(x) {
     setType(x)
   }
-
   function handleChangeFormPhone(event) {
     setPhone(event.target.value)
     setHasPhone(event.target.value.trim().length == 0)

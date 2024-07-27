@@ -1,0 +1,41 @@
+.container {
+  display : flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: stretch;
+  column-gap : 10px;
+}
+.item.content{
+  flex-grow : 4;
+}
+.item {
+  flex-grow : 1;
+}
+.text {
+  color : #616161;
+}
+.message {
+  padding-left: 1rem;
+  display : flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: stretch;
+  column-gap : 10px;
+}
+.metainfo {
+  font-family: 'Roboto';
+  font-size: small;
+  min-width: 4rem;
+  padding-right: 0.3rem;
+}
+.content {
+  font-family: 'Roboto';
+  text-align: left;
+}
+/* <section>
+<p>{sender}</p>
+<p>{isRead ? null : 'not read' }</p>
+<p>{created}</p>
+</section>
+<p> {encrypted}</p>
+<p>{isEdited ? 'edited' : null} </p> */

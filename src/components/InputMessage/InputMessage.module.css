@@ -1,0 +1,36 @@
+.control {
+  border: 0.13rem solid rgb(218, 218, 218);
+  border-radius: 16px; 
+  width: 90%;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-weight: 400;
+  font-size:larger;
+  margin-right: 0.5rem;
+  padding-bottom: 0.5rem;
+  padding-top: 0.5rem;
+  font-family: 'Roboto';
+  background: #ffffff;
+} 
+.container {
+  margin-left: auto;
+  margin-right: auto;
+  display : flex;
+  flex-direction: row;
+  align-items: stretch;
+  row-gap : 10px;
+  width: 100%;
+}
+
+.submit {
+  transition: all 0.3s;
+  margin-left: auto;
+  width: 20%;
+  margin-left :auto;
+  cursor: pointer;
+  border: none;
+  background: #fff;
+}
+.submit:hover {
+  background: #e7f4ff;
+}

@@ -1,0 +1,27 @@
+
+.chat {
+  display : flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: stretch;
+  row-gap : none;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-weight: 400;
+  font-size:larger;
+  margin-right: 1rem;
+  font-family: 'Roboto';
+  background: #ffffff;
+  color: #000000;
+  border: 0.13rem solid rgb(218, 218, 218);
+}
+.participant {
+  text-align: left;
+  padding-left : 1rem;
+  font-family: 'Roboto';
+  font-size: x-large;
+}
+.chat:hover {
+  background: #e7f4ff;
+}
